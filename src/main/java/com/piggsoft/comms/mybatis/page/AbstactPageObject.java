@@ -2,6 +2,7 @@ package com.piggsoft.comms.mybatis.page;
 
 
 /**
+ * 可以自己继承该类
  * @author CharChen
  * @e-mail piggsoft@163.com
  * @since 2013-5-19
@@ -40,6 +41,10 @@ public abstract class AbstactPageObject{
 	public void setParameterObject(Object parameterObject) {
 		this.parameterObject = parameterObject;
 	}
-
-	public abstract void setCount(int count);
+	
+	/**
+	 * 通过总记录数对AbstactPageObject进行初始化
+	 * @param count 总记录数
+	 */
+	public abstract void initByCountRecords(int count);
 }

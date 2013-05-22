@@ -2,7 +2,6 @@ package com.piggsoft.comms.mybatis.plugin;
 
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -11,7 +10,6 @@ import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
-import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
@@ -20,6 +18,7 @@ import com.piggsoft.comms.mybatis.dialect.DialectFactory;
 import com.piggsoft.comms.mybatis.page.AbstactPageObject;
 import com.piggsoft.comms.mybatis.plugin.helper.CountHelper;
 import com.piggsoft.comms.mybatis.plugin.helper.InvocationHelper;
+import com.piggsoft.comms.utils.StringUtils;
 
 @Intercepts({@Signature(type=Executor.class,method="query",args={MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class})})
 public class PaginationInterceptor implements Interceptor{
@@ -42,13 +41,12 @@ public class PaginationInterceptor implements Interceptor{
 		if (StringUtils.isBlank(originalSql)) {
 			return null;
 		}
-		Configuration configuration = mappedStatement.getConfiguration();
 		
 		//计算记录总数
-		CountHelper.getCount(configuration, mappedStatement, page);
+		CountHelper.getCount(mappedStatement, page);
 		
 		//获得数据库方言
-		Dialect dialect = DialectFactory.createDialect(configuration.getVariables().getProperty("dialect"));
+		Dialect dialect = DialectFactory.createDialect(mappedStatement.getConfiguration().getVariables().getProperty("dialect"));
 
 
 		InvocationHelper.processInvocationArgs(invocation, page, dialect);
