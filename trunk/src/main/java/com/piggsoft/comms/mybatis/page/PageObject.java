@@ -12,15 +12,15 @@ public class PageObject extends AbstactPageObject{
 	/**
 	 * 
 	 */
-	protected int pageSize = 10; // 每页默认10条数据
-	protected int currentPage = 1; // 当前页
-	protected int totalPages = 0; // 总页数
-	protected int totalRows = 0; // 总数据数
-	protected int pageStartRow = 0; // 每页的起始行数
-	protected int pageEndRow = 0; // 每页显示数据的终止行数
-	protected boolean pagination=false;   //是否分页
-	boolean hasNextPage = false; // 是否有下一页
-	boolean hasPreviousPage = false; // 是否有前一页
+	private int pageSize = 10; // 每页默认10条数据
+	private int currentPage = 1; // 当前页
+	private int totalPages = 0; // 总页数
+	private int totalRows = 0; // 总数据数
+	private int pageStartRow = 0; // 每页的起始行数
+	private int pageEndRow = 0; // 每页显示数据的终止行数
+	private boolean pagination=false;   //是否分页
+	private boolean hasNextPage = false; // 是否有下一页
+	private boolean hasPreviousPage = false; // 是否有前一页
 	
 	public PageObject(int rows, int pageSize, Object obj) {
 		this.init(rows, pageSize);
@@ -33,10 +33,19 @@ public class PageObject extends AbstactPageObject{
 	public PageObject(int pageSize, int currentPage) {
 		this.currentPage = currentPage;
 		this.pageSize = pageSize;
+		this.setOffset(0);
+		this.setLimit(this.pageSize);
 	}
 	
 	public PageObject(int currentPage) {
 		this.currentPage = currentPage;
+		this.setOffset(0);
+		this.setLimit(this.pageSize);
+	}
+	
+	public PageObject() {
+		this.setOffset(0);
+		this.setLimit(this.pageSize);
 	}
 
 	/**
@@ -75,8 +84,8 @@ public class PageObject extends AbstactPageObject{
 			} else {
 				totalPages = totalRows / pageSize + 1;
 			}
-	        if(currentPage!=0)
-				gotoPage(currentPage);
+			
+			gotoPage(currentPage);
 	        
 	        super.setLimit(this.pageSize);
 			super.setOffset(this.pageStartRow);
@@ -86,6 +95,10 @@ public class PageObject extends AbstactPageObject{
 	 * 
 	 */
 	private void calculatePage() {
+		
+		currentPage = currentPage <= 0 ? 1 : currentPage;
+		currentPage = currentPage >= totalPages ? totalPages : currentPage;
+		
 		if ((currentPage - 1) > 0) {
 			hasPreviousPage = true;
 		} else {
@@ -243,9 +256,4 @@ public class PageObject extends AbstactPageObject{
 		this.pagination = pagination;
 	}
 	
-	public static void main(String[] args) {
-		PageObject p = new PageObject(101, 10, 2);
-		System.out.println(p.getCurrentPage());
-	}
-
 }

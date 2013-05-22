@@ -10,9 +10,9 @@ package com.piggsoft.comms.mybatis.page;
  */
 public abstract class AbstactPageObject{
 	
-	protected int offset;
+	private int offset;
 	
-	protected int limit;
+	private int limit;
 	
 	protected int count;
 	
