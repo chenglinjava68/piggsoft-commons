@@ -16,9 +16,9 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
 import com.piggsoft.comms.mybatis.dialect.Dialect;
+import com.piggsoft.comms.mybatis.dialect.DialectFactory;
 import com.piggsoft.comms.mybatis.page.AbstactPageObject;
 import com.piggsoft.comms.mybatis.plugin.helper.CountHelper;
-import com.piggsoft.comms.mybatis.plugin.helper.DialectHelper;
 import com.piggsoft.comms.mybatis.plugin.helper.InvocationHelper;
 
 @Intercepts({@Signature(type=Executor.class,method="query",args={MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class})})
@@ -48,7 +48,7 @@ public class PaginationInterceptor implements Interceptor{
 		CountHelper.getCount(configuration, mappedStatement, page);
 		
 		//获得数据库方言
-		Dialect dialect = DialectHelper.getDialect(configuration.getVariables().getProperty("dialect").toUpperCase());
+		Dialect dialect = DialectFactory.createDialect(configuration.getVariables().getProperty("dialect"));
 
 
 		InvocationHelper.processInvocationArgs(invocation, page, dialect);
