@@ -20,13 +20,13 @@ import com.piggsoft.comms.mybatis.page.AbstactPageObject;
 public class CountHelper {
 	/**
 	 * 计算记录总数并存储在<tt>AbstactPageObject</tt>中
-	 * @param configuration
 	 * @param mappedStatement
 	 * @param page
 	 * @return
 	 * @throws SQLException
 	 */
-	public static int getCount(Configuration configuration, MappedStatement mappedStatement, AbstactPageObject page) throws SQLException {
+	public static int getCount(MappedStatement mappedStatement, AbstactPageObject page) throws SQLException {
+		Configuration configuration = mappedStatement.getConfiguration();
 		int count = 0;
 		BoundSql boundSql = mappedStatement.getBoundSql(page.getParameterObject()); 
 		String originalSql = boundSql.getSql().trim();
@@ -43,7 +43,7 @@ public class CountHelper {
 		rs.close();  
 		countStmt.close();  
 		connection.close();
-		page.setCount(count);
+		page.initByCountRecords(count);
 		return count;
 	}
 }

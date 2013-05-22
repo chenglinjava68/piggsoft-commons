@@ -60,7 +60,7 @@ public class PageObject extends AbstactPageObject{
 	}
 	
 	@Override
-	public void setCount(int count) {
+	public void initByCountRecords(int count) {
 		this.init(count, this.pageSize, this.currentPage);
 	}
 	

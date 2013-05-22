@@ -6,27 +6,32 @@ package com.piggsoft.comms.utils;
  * @version 1.0
  */
 public final class StringUtils {
-	public static boolean isNotBlank(String s) {
-		if (isNotEmpty(s) && !s.trim().equals("")) {
-			return true;
-		} 
-		return false;
+	public static boolean isNotBlank(String str) {
+		 return !StringUtils.isBlank(str);
 	}
 	
-	public static boolean isNotEmpty(String s) {
-		if (s == null) {
-			return false;
-		} else if(s.equals("")) {
-			return false;
+	public static boolean isNotEmpty(String str) {
+		 return !StringUtils.isEmpty(str);
+	}
+
+	public static boolean isBlank(String str) {
+		int strLen;
+		if (str == null || (strLen = str.length()) == 0) {
+		    return true;
+		}
+		for (int i = 0; i < strLen; i++) {
+		    if ((Character.isWhitespace(str.charAt(i)) == false)) {
+		        return false;
+		    }
 		}
 		return true;
 	}
-
-	public static boolean isBlank(String s) {
-		return !isNotBlank(s);
+	
+	public static boolean isEmpty(String str) {
+		return str == null || str.length() == 0;
 	}
 	
-	public static boolean isEmpty(String s) {
-		return !isNotEmpty(s);
-	}
+	public static String trim(String str) {
+        return str == null ? null : str.trim();
+    }
 }
