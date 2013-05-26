@@ -25,7 +25,7 @@ public class OracleDialect extends Dialect {
 		
 		pagingSelect.append(sql);
 		
-		pagingSelect.append(" ) row_ ) where rownum_ > "+offset+" and rownum_ <= "+(offset + limit));
+		pagingSelect.append(" ) row_ where rownum <= "+(offset + limit)+ ") where rownum_ > " + offset );
 
 		if (isForUpdate) {
 			pagingSelect.append(" for update");
