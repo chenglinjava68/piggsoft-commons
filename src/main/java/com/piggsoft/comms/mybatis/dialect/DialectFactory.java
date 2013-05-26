@@ -1,11 +1,11 @@
 package com.piggsoft.comms.mybatis.dialect;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.piggsoft.comms.resource.ResourceReader;
 import com.piggsoft.comms.utils.StringUtils;
 
 /**
@@ -22,29 +22,12 @@ public class DialectFactory {
 	
 	static {
 		try {
-			props.load(DialectFactory.class.getResourceAsStream("dialect.properties"));
-			Properties custom = initCustom();
-			if (custom != null && !custom.isEmpty()) {
-				props.putAll(custom);
-			}
+			ResourceReader.read(DialectFactory.class, props, "dialect.properties");
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 	
-	private static Properties initCustom() {
-		final Properties custom = new Properties();
-		try {
-			InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("dialect.properties");
-			if (in == null) {
-				return null;
-			}
-			custom.load(in);
-		} catch (IOException e) {
-			return null;
-		}
-		return custom;
-	}
 	
 	public static Dialect createDialect(String dialectString) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		if(StringUtils.isBlank(dialectString)) {
