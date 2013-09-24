@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+                        
+    <global-method-security pre-post-annotations="enabled" /> 
+    <!-- 该路径下的资源不用过滤 -->           
+    <http pattern="/js/**" security="none"/>
+    
+    <http use-expressions="true" auto-config="true" >
+    	<access-denied-handler ref="accessDeniedHandler" />
+        <form-login />
+        <logout/>
+        <!-- 实现免登陆验证 -->
+        <remember-me />
+        <!-- 防止同一用户多次登录，使第二次登录失败  -->
+        <session-management invalid-session-url="/timeout.jsp" session-fixation-protection="none">
+            <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
+        </session-management>
+        
+		<custom-filter ref="customerSecurityFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
+		
+    </http>
+    
+    <!-- 配置过滤器 -->
+    <beans:bean id="customerSecurityFilter" class="com.piggsoft.comms.security.PiggsoftSecurityFilter">
+    	<!-- 用户拥有的权限 -->
+    	<beans:property name="authenticationManager" ref="piggsoftAuthenticationManager" />
+    	<!-- 用户是否拥有所请求资源的权限 -->
+    	<beans:property name="accessDecisionManager" ref="piggsoftAccessDecisionManager" />
+    	<!-- 资源与权限对应关系 -->
+    	<beans:property name="securityMetadataSource" ref="piggsoftSecurityMetadataSource" />
+    </beans:bean>
+    <!-- 实现了UserDetailsService的Bean -->
+    <authentication-manager alias="piggsoftAuthenticationManager">
+        <authentication-provider user-service-ref="piggsoftUserDetailServiceImpl">
+        <!--   如果用户的密码采用加密的话，可以加点“盐”  
+                <password-encoder hash="md5" />  
+            -->  
+        </authentication-provider>
+    </authentication-manager>
+    
+    <beans:bean id="piggsoftAccessDecisionManager" class="com.piggsoft.comms.security.PiggsoftAccessDecisionManager"></beans:bean>
+    
+	<beans:bean id="piggsoftSecurityMetadataSource" class="com.piggsoft.comms.security.PiggsoftSecurityMetadataSource">
+		<beans:constructor-arg name="resourcesDao" ref="resourcesDao"></beans:constructor-arg>
+	</beans:bean>
+	<beans:bean id="piggsoftUserDetailServiceImpl" class="com.piggsoft.comms.security.PiggsoftUserDetailServiceImpl">
+		<beans:property name="usersDao" ref="usersDao"></beans:property>
+	</beans:bean> 
+	
+	<!-- 当权限不足时的处理逻辑 -->
+	<beans:bean id="accessDeniedHandler" class="com.piggsoft.comms.security.PiggsoftAccessDeniedHandler"/>          
+</beans:beans>
