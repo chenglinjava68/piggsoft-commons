@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import com.piggsoft.comms.mybatis.dialect.DialectFactory;
 
 /**
  * @author piggsoft
@@ -21,7 +20,7 @@ public class ResourceReader {
 	 * @throws IOException
 	 */
 	public static void read(Class<?> clazz, Properties props, String resourceName) throws IOException {
-		props.load(DialectFactory.class.getResourceAsStream(resourceName));
+		//props.load(DialectFactory.class.getResourceAsStream(resourceName));
 		Properties defaultProps = initDefault(resourceName, clazz);
 		if (defaultProps != null && !defaultProps.isEmpty()) {
 			props.putAll(defaultProps);
