@@ -27,30 +27,48 @@
     <!-- 配置过滤器 -->
     <beans:bean id="customerSecurityFilter" class="com.piggsoft.comms.security.PiggsoftSecurityFilter">
     	<!-- 用户拥有的权限 -->
-    	<beans:property name="authenticationManager" ref="piggsoftAuthenticationManager" />
+    	<beans:property name="authenticationManager" ref="authenticationManager" />
     	<!-- 用户是否拥有所请求资源的权限 -->
     	<beans:property name="accessDecisionManager" ref="piggsoftAccessDecisionManager" />
     	<!-- 资源与权限对应关系 -->
     	<beans:property name="securityMetadataSource" ref="piggsoftSecurityMetadataSource" />
     </beans:bean>
     <!-- 实现了UserDetailsService的Bean -->
-    <authentication-manager alias="piggsoftAuthenticationManager">
-        <authentication-provider user-service-ref="piggsoftUserDetailServiceImpl">
-        <!--   如果用户的密码采用加密的话，可以加点“盐”  
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider user-service-ref="userDetailServiceImpl">
+        <!--   如果用户的密码采用加密的话，可以加点“盐”  -->
                 <password-encoder hash="md5" />  
-            -->  
         </authentication-provider>
     </authentication-manager>
     
     <beans:bean id="piggsoftAccessDecisionManager" class="com.piggsoft.comms.security.PiggsoftAccessDecisionManager"></beans:bean>
     
-	<beans:bean id="piggsoftSecurityMetadataSource" class="com.piggsoft.comms.security.PiggsoftSecurityMetadataSource">
-		<beans:constructor-arg name="resourcesDao" ref="resourcesDao"></beans:constructor-arg>
+	<beans:bean id="piggsoftSecurityMetadataSource" class="com.piggsoft.comms.security.PiggsoftSecurityMetadataSource" init-method="init">
+		<beans:property name="roleResourcesDao" ref="roleResourcesDao"></beans:property>
 	</beans:bean>
-	<beans:bean id="piggsoftUserDetailServiceImpl" class="com.piggsoft.comms.security.PiggsoftUserDetailServiceImpl">
+	
+	
+	
+	<beans:bean id="userDetailServiceImpl" class="com.piggsoft.comms.security.UserDetailServiceImpl">
 		<beans:property name="usersDao" ref="usersDao"></beans:property>
 	</beans:bean> 
 	
 	<!-- 当权限不足时的处理逻辑 -->
-	<beans:bean id="accessDeniedHandler" class="com.piggsoft.comms.security.PiggsoftAccessDeniedHandler"/>          
+	<beans:bean id="accessDeniedHandler" class="com.piggsoft.comms.security.PiggsoftAccessDeniedHandler"/>
+	
+	
+	<beans:bean id="userCache" class="org.springframework.security.core.userdetails.cache.EhCacheBasedUserCache">
+		<beans:property name="cache" ref="userEhCache"/>
+	</beans:bean>
+	
+	<!-- 定义ehCache的工厂，并设置所使用的Cache name -->  
+	<beans:bean id="userEhCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+		<beans:property name="cacheName" value="userCache" /> <!--ehcache.xml中配置的cache名  -->
+  		<beans:property name="cacheManager" ref="cacheManager" />
+	</beans:bean>
+	
+	<!-- 引用ehCache的配置 -->  
+	<beans:bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<beans:property name="configLocation" value="classpath:ehcache.xml"/>
+	</beans:bean> 
 </beans:beans>
