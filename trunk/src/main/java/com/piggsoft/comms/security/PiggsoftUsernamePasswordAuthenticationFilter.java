@@ -11,7 +11,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 public class PiggsoftUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 	
-	private boolean postOnly;
+	private boolean postOnly = true;
 	
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request,
@@ -19,7 +19,7 @@ public class PiggsoftUsernamePasswordAuthenticationFilter extends UsernamePasswo
 		if (postOnly && !request.getMethod().equals("POST")) {
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
-
+		
         String username = obtainUsername(request);
         String password = obtainPassword(request);
 
