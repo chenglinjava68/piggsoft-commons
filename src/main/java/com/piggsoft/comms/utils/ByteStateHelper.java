@@ -96,7 +96,7 @@ public final class ByteStateHelper {
 	 * @return 返回设置后的status 
 	 * 	<br>如果type值有误，返回-1
 	 */
-	public static int setStatus(int status, int type, boolean flag) {
+	public static final int setStatus(int status, int type, boolean flag) {
 		if (!validateType(type)) {
 			return -1;
 		}
