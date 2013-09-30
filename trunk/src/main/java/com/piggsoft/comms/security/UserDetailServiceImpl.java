@@ -37,13 +37,14 @@ public class UserDetailServiceImpl implements UserDetailsService{
         Collection<GrantedAuthority> grantedAuths = obtionGrantedAuthorities(users);  
         
         
-        
+        /*
         boolean enables = true;  
         boolean accountNonExpired = true;  
         boolean credentialsNonExpired = true;  
         boolean accountNonLocked = true;  
-          
-        User userdetail = new User(users.getAccount(), users.getPassword(), enables, accountNonExpired, credentialsNonExpired, accountNonLocked, grantedAuths);  
+        */  
+        User userdetail = new User(users.getAccount(), users.getPassword(), users.isEnabled(), 
+        			users.isAccountNonExpired(), users.isCredentialsNonExpired(), users.isAccountNonLocked(), grantedAuths);  
         return userdetail;  
     }  
       
